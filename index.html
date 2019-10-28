@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+    <main id="main">
+        <canvas id="canvas"></canvas>
+        <canvas id="canvas_2"></canvas>
+    </main>
+    <img src="img/serfing.jpg"
+         id="img_1" alt="">
+    <img src="img/snow.png"
+         id="img_2" alt="">
+    <img src="img/kit.jpg"
+         id="img_3" alt="">
+</body>
+<script>
+    let masImag = [];
+    let canvas = document.getElementById('canvas');
+    canvas.setAttribute('width', 800);
+    canvas.setAttribute('height', 500);
+    let ctx = canvas.getContext('2d');
+
+    let canvas_2 = document.getElementById('canvas_2');
+    canvas_2.setAttribute('width', 800);
+    canvas_2.setAttribute('height', 500);
+    let ctx_2 = canvas_2.getContext('2d');
+
+    let img_1 = document.getElementById('img_1');
+    let img_2 = document.getElementById('img_2');
+    let img_3 = document.getElementById('img_3');
+
+    let degre = 0;
+    let posY = 220;
+    let posX = 220;
+    let dAcs = 0.01;
+
+    if (ctx) {
+	    animRotation();
+    }
+
+    function loadImage(src) {
+        let img = new Image();
+        img.src = src;
+        img.onload = function () {
+
+        }
+    }
+    
+    function animRotation() {
+	    ctx.clearRect(0, 0, 800, 500);
+
+	    ctx.translate(posX, posY);
+	    ctx.rotate(inRad(degre));
+
+	    ctx.drawImage(img_2, -220, -220);
+//	    ctx.scale(1.001, 1.001);
+	    ctx.rotate(inRad(-degre));
+	    ctx.translate(-posX, -posY);
+
+//	    dAcs += 0.01;
+	    degre += 0.8 + dAcs;
+	    posX += 0.3;
+	    posY += 0.5;
+
+
+	    ctx.globalCompositeOperation = 'source-in';
+	    ctx.drawImage(img_1, 0, 0);
+	    ctx.globalCompositeOperation = 'source-over';
+
+	    ctx_2.drawImage(img_3, 0, 0);
+	    ctx_2.drawImage(canvas, 0, 0);
+
+
+	    requestAnimationFrame( animRotation )
+    }
+
+    function inRad(num) {
+	    return num * Math.PI / 180;
+    }
+</script>
+</html>
