@@ -32,10 +32,28 @@
 </body>
 <script>
     let masImag = [];
+    let masUrlImg = [
+    	'img/serfing.jpg',
+        'img/snow.png',
+        'img/kit.jpg'
+    ];
     let canvas = document.getElementById('canvas');
     canvas.setAttribute('width', 800);
     canvas.setAttribute('height', 500);
     let ctx = canvas.getContext('2d');
+
+
+    masUrlImg.forEach( x => { loadImage('img/serfing.jpg'); });
+
+    Promise.all(masImag).then( result => {
+	    console.log("fffffff", masImag );
+
+        if (ctx) {
+		    animRotation();
+	    }
+    })
+
+
 
     let canvas_2 = document.getElementById('canvas_2');
     canvas_2.setAttribute('width', 800);
@@ -46,21 +64,28 @@
     let img_2 = document.getElementById('img_2');
     let img_3 = document.getElementById('img_3');
 
+    let img_4 = new Image();
+    img_4.src = 'img/kit.jpg';
+
     let degre = 0;
     let posY = 220;
     let posX = 220;
     let dAcs = 0.01;
 
-    if (ctx) {
-	    animRotation();
-    }
+//    if (ctx) {
+//	    animRotation();
+//    }
 
     function loadImage(src) {
         let img = new Image();
         img.src = src;
-        img.onload = function () {
-
-        }
+        return new Promise( (resolve, reject) => {
+	        img.onload = function () {
+	            masImag.push(img)
+	            console.log('ttttttttttttttt', img);
+	            resolve(img);
+            }
+        });
     }
     
     function animRotation() {
@@ -70,7 +95,6 @@
 	    ctx.rotate(inRad(degre));
 
 	    ctx.drawImage(img_2, -220, -220);
-//	    ctx.scale(1.001, 1.001);
 	    ctx.rotate(inRad(-degre));
 	    ctx.translate(-posX, -posY);
 
@@ -79,14 +103,12 @@
 	    posX += 0.3;
 	    posY += 0.5;
 
-
 	    ctx.globalCompositeOperation = 'source-in';
 	    ctx.drawImage(img_1, 0, 0);
 	    ctx.globalCompositeOperation = 'source-over';
 
-	    ctx_2.drawImage(img_3, 0, 0);
+	    ctx_2.drawImage(img_4, 0, 0);
 	    ctx_2.drawImage(canvas, 0, 0);
-
 
 	    requestAnimationFrame( animRotation )
     }
