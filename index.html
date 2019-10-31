@@ -25,6 +25,8 @@
     </main>
 </body>
 <script>
+    const countEl = 100;
+    let masElem = [];
     let masImag = [];
     let masPromis = [];
     let masUrlImg = [
@@ -38,23 +40,34 @@
     canvas.setAttribute('height', 500);
     let ctx = canvas.getContext('2d');
 
-    masUrlImg.forEach( x => { masPromis.push(loadImage(x)); });
+    masUrlImg.forEach( x => { masPromis.push(loadImage(x)) });
     let ppp;
     Promise.all(masPromis).then( result => {
         
 	    masImag = result.map( zn => zn );
-        ppp = new elemImgCanvas(
-        	masImag[1],
-            440,
-            440,
-            0,
-            0,
-            0,
-            0.2,
-            0.5,
-            0.5
-        );
-        console.log("vvvvvvvvv", ppp );
+
+	    for (let i = 0; i < countEl; i++) {
+
+	    	let sizeEl = Math.random() * 50 + 50;
+	    	let posX = Math.random() * 800 - 100;
+	    	let posY = Math.random() * 400 - 420;
+	    	let agle = Math.random() * 360;
+	    	let agleSpeed = Math.random() * 0.5;
+	    	let transX = Math.random() * 0.1 + 0.1;
+	    	let transY = Math.random() * 0.5 + 0.5;
+
+		    masElem.push(new elemImgCanvas(
+			    masImag[1],
+			    sizeEl,
+			    sizeEl,
+			    posX,
+			    posY,
+			    agle,
+			    agleSpeed,
+			    transX,
+			    transY
+		    ));
+        }
 
         if (ctx) animRotation();
     });
@@ -65,11 +78,6 @@
     canvas_2.setAttribute('width', 800);
     canvas_2.setAttribute('height', 500);
     let ctx_2 = canvas_2.getContext('2d');
-
-    let degre = 0;
-    let posY = 220;
-    let posX = 220;
-    let dAcs = 0.01;
 
     function loadImage(src) {
         let img = new Image();
@@ -84,34 +92,37 @@
     function animRotation() {
 	    ctx.clearRect(0, 0, ctx.canvas.offsetWidth, ctx.canvas.offsetHeight);
 
-	    ctx.translate(ppp.posX, ppp.posY);
-	    ctx.rotate(inRad(ppp.angle));
-//        debugger
-	    ctx.drawImage(ppp.img, -ppp.width/2, -ppp.height/2);
-	    ctx.rotate(inRad(-ppp.angle));
-	    ctx.translate(-ppp.posX, -ppp.posY);
+	    masElem.forEach( el => {
 
-//	    dAcs += 0.01;
-	    ppp.angle += ppp.speedAngle;
+            ctx.translate(el.posX, el.posY);
+            ctx.rotate(inRad(el.angle));
+    //        debugger
+            ctx.drawImage(el.img, -el.width/2, -el.height/2, el.width, el.height);
+            ctx.rotate(inRad(-el.angle));
+            ctx.translate(-el.posX, -el.posY);
 
-	    if (ppp.posX - ppp.width/2 > ctx.canvas.offsetWidth) {
-		    ppp.posX = -ppp.width/2;
-	    } else {
-		    ppp.posX += ppp.transY;
-	    }
+            el.angle += el.speedAngle;
 
-	    if (ppp.posY - ppp.height/2 > ctx.canvas.offsetHeight) {
-		    ppp.posY = -ppp.height/2;
-        } else {
-		    ppp.posY += ppp.transY;
-        }
+            if (el.posX - el.width > ctx.canvas.offsetWidth) {
+                el.posX = Math.random() * ctx.canvas.offsetWidth;
+	            el.posY = -el.height/2;
+            } else {
+                el.posX += el.transX;
+            }
 
-	    ctx.globalCompositeOperation = 'source-in';
-	    ctx.drawImage(masImag[0], 0, 0);
-	    ctx.globalCompositeOperation = 'source-over';
+            if (el.posY - el.height/2 > ctx.canvas.offsetHeight) {
+                el.posY = -el.height/2;
+            } else {
+                el.posY += el.transY;
+            }
 
-	    ctx_2.drawImage(masImag[2], 0, 0);
-	    ctx_2.drawImage(canvas, 0, 0);
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.drawImage(masImag[0], 0, 0);
+            ctx.globalCompositeOperation = 'source-over';
+
+            ctx_2.drawImage(masImag[2], 0, 0);
+            ctx_2.drawImage(canvas, 0, 0);
+        });
 
 	    requestAnimationFrame( animRotation )
     }
