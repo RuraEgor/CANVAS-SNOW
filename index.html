@@ -38,11 +38,24 @@
     canvas.setAttribute('height', 500);
     let ctx = canvas.getContext('2d');
 
-
     masUrlImg.forEach( x => { masPromis.push(loadImage(x)); });
-
+    let ppp;
     Promise.all(masPromis).then( result => {
+        
 	    masImag = result.map( zn => zn );
+        ppp = new elemImgCanvas(
+        	masImag[1],
+            440,
+            440,
+            0,
+            0,
+            0,
+            0.2,
+            0.5,
+            0.5
+        );
+        console.log("vvvvvvvvv", ppp );
+
         if (ctx) animRotation();
     });
 
@@ -69,19 +82,29 @@
     }
     
     function animRotation() {
-	    ctx.clearRect(0, 0, 800, 500);
+	    ctx.clearRect(0, 0, ctx.canvas.offsetWidth, ctx.canvas.offsetHeight);
 
-	    ctx.translate(posX, posY);
-	    ctx.rotate(inRad(degre));
+	    ctx.translate(ppp.posX, ppp.posY);
+	    ctx.rotate(inRad(ppp.angle));
 //        debugger
-	    ctx.drawImage(masImag[1], -220, -220);
-	    ctx.rotate(inRad(-degre));
-	    ctx.translate(-posX, -posY);
+	    ctx.drawImage(ppp.img, -ppp.width/2, -ppp.height/2);
+	    ctx.rotate(inRad(-ppp.angle));
+	    ctx.translate(-ppp.posX, -ppp.posY);
 
 //	    dAcs += 0.01;
-	    degre += 0.8 + dAcs;
-	    posX += 0.3;
-	    posY += 0.5;
+	    ppp.angle += ppp.speedAngle;
+
+	    if (ppp.posX - ppp.width/2 > ctx.canvas.offsetWidth) {
+		    ppp.posX = -ppp.width/2;
+	    } else {
+		    ppp.posX += ppp.transY;
+	    }
+
+	    if (ppp.posY - ppp.height/2 > ctx.canvas.offsetHeight) {
+		    ppp.posY = -ppp.height/2;
+        } else {
+		    ppp.posY += ppp.transY;
+        }
 
 	    ctx.globalCompositeOperation = 'source-in';
 	    ctx.drawImage(masImag[0], 0, 0);
@@ -95,6 +118,18 @@
 
     function inRad(num) {
 	    return num * Math.PI / 180;
+    }
+
+    function elemImgCanvas(img, height, width, posX, posY, angle, speedAngle, transX, transY) {
+    	this.img = img;
+	    this.width = width;
+	    this.height = height;
+    	this.posX = posX;
+    	this.posY = posY;
+    	this.angle = angle;
+    	this.speedAngle = speedAngle;
+    	this.transX = transX;
+    	this.transY = transY;
     }
 </script>
 </html>
