@@ -13,19 +13,31 @@
             padding: 0;
         }
 
+        body {
+            overflow: hidden;
+        }
+
         canvas {
-            border: 1px solid red;
+
+        }
+
+        .can_1 {
+            position: absolute;
+            z-index: -1;
+            left: 0;
+            top: 0;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <main id="main">
-        <canvas id="canvas"></canvas>
-        <canvas id="canvas_2"></canvas>
+        <canvas id="canvas" class="can_1"></canvas>
+        <canvas id="canvas_2" class="can_2"></canvas>
     </main>
 </body>
 <script>
-    const countEl = 100;
+    const countEl = 500;
     let masElem = [];
     let masImag = [];
     let masPromis = [];
@@ -35,22 +47,30 @@
         'img/kit.jpg'
     ];
 
+    let windW, windH;
+
+    window.onresize = function () {
+        resize();
+    }
+
+    resize();
+
     let canvas = document.getElementById('canvas');
-    canvas.setAttribute('width', 800);
-    canvas.setAttribute('height', 500);
+    canvas.setAttribute('width', windW);
+    canvas.setAttribute('height', windH);
     let ctx = canvas.getContext('2d');
 
     masUrlImg.forEach( x => { masPromis.push(loadImage(x)) });
-    let ppp;
+
     Promise.all(masPromis).then( result => {
         
 	    masImag = result.map( zn => zn );
 
 	    for (let i = 0; i < countEl; i++) {
 
-	    	let sizeEl = Math.random() * 50 + 50;
-	    	let posX = Math.random() * 800 - 100;
-	    	let posY = Math.random() * 400 - 420;
+	    	let sizeEl = Math.random() * 50 + 20;
+	    	let posX = Math.random() * (windW + 250) - 250;
+	    	let posY = Math.random() * 400 - 450;
 	    	let agle = Math.random() * 360;
 	    	let agleSpeed = Math.random() * 0.5;
 	    	let transX = Math.random() * 0.1 + 0.1;
@@ -75,8 +95,8 @@
 
 
     let canvas_2 = document.getElementById('canvas_2');
-    canvas_2.setAttribute('width', 800);
-    canvas_2.setAttribute('height', 500);
+    canvas_2.setAttribute('width', windW);
+    canvas_2.setAttribute('height', windH);
     let ctx_2 = canvas_2.getContext('2d');
 
     function loadImage(src) {
@@ -90,41 +110,42 @@
     }
     
     function animRotation() {
-	    ctx.clearRect(0, 0, ctx.canvas.offsetWidth, ctx.canvas.offsetHeight);
+	    ctx.clearRect(0, 0, windW, windH);
 
 	    masElem.forEach( el => {
 
             ctx.translate(el.posX, el.posY);
             ctx.rotate(inRad(el.angle));
-    //        debugger
+
             ctx.drawImage(el.img, -el.width/2, -el.height/2, el.width, el.height);
+
             ctx.rotate(inRad(-el.angle));
             ctx.translate(-el.posX, -el.posY);
 
             el.angle += el.speedAngle;
 
-            if (el.posX - el.width > ctx.canvas.offsetWidth) {
-                el.posX = Math.random() * ctx.canvas.offsetWidth;
+            if (el.posX - el.width > windW) {
+                el.posX = Math.random() * windW;
 	            el.posY = -el.height/2;
             } else {
                 el.posX += el.transX;
             }
 
-            if (el.posY - el.height/2 > ctx.canvas.offsetHeight) {
+            if (el.posY - el.height/2 > windH) {
                 el.posY = -el.height/2;
             } else {
                 el.posY += el.transY;
             }
-
-            ctx.globalCompositeOperation = 'source-in';
-            ctx.drawImage(masImag[0], 0, 0);
-            ctx.globalCompositeOperation = 'source-over';
-
-            ctx_2.drawImage(masImag[2], 0, 0);
-            ctx_2.drawImage(canvas, 0, 0);
         });
 
-	    requestAnimationFrame( animRotation )
+	    ctx.globalCompositeOperation = 'source-in';
+	    ctx.drawImage(masImag[0], 0, 0);
+	    ctx.globalCompositeOperation = 'source-over';
+
+	    ctx_2.drawImage(masImag[2], 0, 0);
+	    ctx_2.drawImage(canvas, 0, 0);
+
+	    requestAnimationFrame( animRotation );
     }
 
     function inRad(num) {
@@ -141,6 +162,11 @@
     	this.speedAngle = speedAngle;
     	this.transX = transX;
     	this.transY = transY;
+    }
+    
+    function resize() {
+	    windW = window.innerWidth;
+	    windH = window.innerHeight;
     }
 </script>
 </html>
