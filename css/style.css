@@ -1,0 +1,21 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+canvas {
+
+}
+
+.can_1 {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
