@@ -1,5 +1,5 @@
 
-const countEl = 300;
+const countEl = 2000;
 let masElem = [];
 let masImg = [];
 let masPromis = [];
@@ -52,12 +52,12 @@ Promise.all(masPromis).then( result => {
 			}
 		}
 		
-		let sizeEl = Math.random() * 50 + 20;
+		let sizeEl = Math.random() * 70 + 30;
 		let posX = Math.random() * (windW + 250) - 250;
-		let posY = Math.random() * 400 - 450;
+		let posY = Math.random() * 700 - 750;
 		let agle = Math.random() * 360;
 		let agleSpeed = Math.random() * 0.5;
-		let transX = Math.random() * 0.1 + 0.1;
+		let transX = Math.random() * 0.3 + 0.02;
 		let transY = Math.random() * 0.5 + 0.5;
 		
 		masElem.push(new elemImgCanvas(
@@ -123,15 +123,16 @@ function animRotation() {
 	});
 	
 	ctx.globalCompositeOperation = 'source-in';
-	ctx.drawImage(masImg[0], 0, 0);
-	// bgCover(ctx, masImg[0]);
+	// ctx.drawImage(masImg[0], 0, 0);
+	bgCover(ctx, masImg[0]);
 	ctx.globalCompositeOperation = 'source-over';
 	
 	
 	// ctx_2.drawImage(bgMain, 0, 0);
-	// ctx_2.drawImage(canvas, 0, 0);
+	// bgCover(ctx_2, canvas);
+	
 	bgCover(ctx_2, bgMain);
-	bgCover(ctx_2, canvas);
+	ctx_2.drawImage(canvas, 0, 0);
 	
 	requestAnimationFrame( animRotation );
 }
@@ -156,27 +157,40 @@ function elemImgCanvas(imgFon, imgShape, height, width, posX, posY, angle, speed
 function resize() {
 	windW = window.innerWidth;
 	windH = window.innerHeight;
-	
-	// bgCover();
 }
 
 function bgCover(cnv, img) {
-	// let typeScreen = windW / windH;
+	let typeScreen = windW / windH;
 	let typeImg = img.width / img.height;
-	
 	let imgW, imgH, posX, posY;
-	// if (typeScreen >= 1) {
-		if (typeImg >= 1) {
-			imgW = img.width * typeImg;
+	
+	if (typeScreen >= 1) {
+		if (typeImg < 1) {
+			imgW = windH * typeImg;
 			imgH = windH;
 			posX = (imgW - windW) / 2;
 			posY = 0;
 		} else {
 			imgW = windW;
-			imgH = img.height / typeImg;
+			imgH = windW / typeImg;
 			posX = 0;
 			posY = (imgH - windH) / 2;
 		}
+	} else {
+		if (typeImg >= 1) {
+			imgW = windH * typeImg;
+			imgH = windH;
+			posX = (imgW - windW) / 2;
+			posY = 0;
+		} else {
+			imgW = windW;
+			imgH = windW / typeImg;
+			posX = 0;
+			posY = (imgH - windH) / 2;
+		}
+	}
+	
+	// debugger
 	
 	cnv.drawImage(img, -posX, -posY, imgW, imgH);
 	// cnv.drawImage(img, 0, 0, imgW, imgH);
