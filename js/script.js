@@ -1,5 +1,5 @@
 
-const countEl = 2000;
+const countEl = 500;
 let masElem = [];
 let masImg = [];
 let masPromis = [];
@@ -58,7 +58,7 @@ Promise.all(masPromis).then( result => {
 		let agle = Math.random() * 360;
 		let agleSpeed = Math.random() * 0.5;
 		let transX = Math.random() * 0.3 + 0.02;
-		let transY = Math.random() * 0.5 + 0.5;
+		let transY = Math.random() * 0.8 + 0.6;
 		
 		masElem.push(new elemImgCanvas(
 			masImg[allTpElImgCn],
@@ -170,11 +170,25 @@ function bgCover(cnv, img) {
 			imgH = windH;
 			posX = (imgW - windW) / 2;
 			posY = 0;
+			
+			if (imgW < windW) {
+				imgW = windW;
+				imgH = windW / typeImg;
+				posX = 0;
+				posY = (imgH - windH) / 2;
+			}
 		} else {
 			imgW = windW;
 			imgH = windW / typeImg;
 			posX = 0;
 			posY = (imgH - windH) / 2;
+			
+			if (imgH < windH) {
+				imgW = windH * typeImg;
+				imgH = windH;
+				posX = (imgW - windW) / 2;
+				posY = 0;
+			}
 		}
 	} else {
 		if (typeImg >= 1) {
@@ -182,16 +196,27 @@ function bgCover(cnv, img) {
 			imgH = windH;
 			posX = (imgW - windW) / 2;
 			posY = 0;
+			
+			if (imgW < windW) {
+				imgW = windW;
+				imgH = windW / typeImg;
+				posX = 0;
+				posY = (imgH - windH) / 2;
+			}
 		} else {
 			imgW = windW;
 			imgH = windW / typeImg;
 			posX = 0;
 			posY = (imgH - windH) / 2;
+			
+			if (imgH < windH) {
+				imgW = windH * typeImg;
+				imgH = windH;
+				posX = (imgW - windW) / 2;
+				posY = 0;
+			}
 		}
 	}
 	
-	// debugger
-	
 	cnv.drawImage(img, -posX, -posY, imgW, imgH);
-	// cnv.drawImage(img, 0, 0, imgW, imgH);
 }
