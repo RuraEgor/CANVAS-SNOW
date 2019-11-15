@@ -3,7 +3,7 @@ const countEl = 500;
 let masElem = [];
 let masImg = [];
 let masPromis = [];
-let bgMain;
+let bgMain, bgVtr;
 
 countTypeEl = 50;
 countTypeImg = 0;
@@ -12,8 +12,13 @@ let masUrlImg = [
 	'img/kit.jpg',
 	'img/serfing.jpg',
 	'img/snow.png',
-	'img/rwby.png',
-	'img/snow.png'
+	'img/snow_2.webp',
+	'img/snow_3.webp',
+	'img/snow_4.png',
+	'img/snow_5.webp',
+	'img/snow_5.webp',
+	// 'img/rwby.png',
+	// 'img/snow.png'
 ];
 
 let windW, windH;
@@ -35,34 +40,36 @@ Promise.all(masPromis).then( result => {
 	
 	masImg = result.map( zn => zn );
 	bgMain = masImg.shift();
+	bgVtr = masImg.shift();
 	const allTypeElImg = masImg.length / 2;
 	let allTpElImgCn = 0;
 	let trImgEl = 0;
 
 	for (let i = 0; i < countEl; i++) {
 		
-		if (!(i == 0) && !(i % countTypeEl)) {
-			trImgEl++
-			if (trImgEl < allTypeElImg) {
-				trImgEl++;
-				allTpElImgCn += 2;
-			} else {
-				trImgEl = 0;
-				allTpElImgCn = 0;
-			}
-		}
+		// if (!(i == 0) && !(i % countTypeEl)) {
+		// 	trImgEl++
+		// 	if (trImgEl < allTypeElImg) {
+		// 		trImgEl++;
+		// 		allTpElImgCn += 2;
+		// 	} else {
+		// 		trImgEl = 0;
+		// 		allTpElImgCn = 0;
+		// 	}
+		// }
 		
-		let sizeEl = Math.random() * 70 + 30;
+		let sizeEl = Math.random() * 100 + 20;
 		let posX = Math.random() * (windW + 250) - 250;
 		let posY = Math.random() * 700 - 750;
 		let agle = Math.random() * 360;
-		let agleSpeed = Math.random() * 0.5;
+		let agleSpeed = Math.random() * 0.5 + 0.1;
 		let transX = Math.random() * 0.3 + 0.02;
 		let transY = Math.random() * 0.8 + 0.6;
 		
 		masElem.push(new elemImgCanvas(
 			masImg[allTpElImgCn],
-			masImg[allTpElImgCn + 1],
+			// masImg[allTpElImgCn + 1],
+			masImg[randomInteger(masImg.length - 1)],
 			sizeEl,
 			sizeEl,
 			posX,
@@ -90,7 +97,6 @@ function loadImage(src) {
 	return new Promise( (resolve, reject) => {
 		img.onload = function () {
 		resolve(img);
-		
 	}
 });
 }
@@ -109,7 +115,7 @@ function animRotation() {
 		el.angle += el.speedAngle;
 		
 		if (el.posX - el.width > windW) {
-			el.posX = Math.random() * windW;
+			el.posX = Math.random() * (windW + 200) - 200;
 			el.posY = -el.height/2;
 		} else {
 			el.posX += el.transX;
@@ -124,7 +130,8 @@ function animRotation() {
 	
 	ctx.globalCompositeOperation = 'source-in';
 	// ctx.drawImage(masImg[0], 0, 0);
-	bgCover(ctx, masImg[0]);
+	// bgCover(ctx, masImg[0]);
+	bgCover(ctx, bgVtr);
 	ctx.globalCompositeOperation = 'source-over';
 	
 	
@@ -219,4 +226,11 @@ function bgCover(cnv, img) {
 	}
 	
 	cnv.drawImage(img, -posX, -posY, imgW, imgH);
+}
+
+
+function randomInteger(max = 1) {
+	if (!max || max == 1) return 1;
+	let rand = 0.5 + Math.random() * max;
+	return Math.round(rand);
 }
